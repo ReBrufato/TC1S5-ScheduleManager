@@ -19,4 +19,13 @@ public class CadastroPage {
                     " a págiana enviada é: " + driver.getCurrentUrl());
         }
     }
+
+    public HomePage cadastroUserValido(String nome, String email, String telefone){
+        driver.findElement(nameContact).sendKeys(nome);
+        driver.findElement(emailContact).sendKeys(email);
+        driver.findElement(phoneContact).sendKeys(telefone);
+        driver.findElement(submit).click();
+        driver.findElement(retornoIndex).click();
+        return new HomePage(driver);
+    }
 }
