@@ -4,16 +4,22 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import pages.CadastroPage;
+import pages.ContatosPage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class AgendaTest {
 
     private WebDriver driver;
     static String indexPath;
+    static String registerPath;
+    static String editPath;
 
     @BeforeAll
     static void getIndexPath(){
@@ -33,9 +39,11 @@ public class AgendaTest {
             indexSource.add(folder);
         }
         indexSource.add("src");
-        indexSource.add("index.html");
 
-        indexPath = indexSource.toString();
+        indexPath = indexSource.toString() + "/index.html";
+        registerPath = indexSource.toString() + "/register.html";
+        editPath = indexSource.toString() + "/edit.html";
+
     }
 
     @BeforeEach
@@ -56,8 +64,24 @@ public class AgendaTest {
     @DisplayName("Should open and close chrome browser using Manager")
     void shouldOpenAndCloseChromeBrowserUsingManager() throws InterruptedException {
 
-        driver.get(indexPath);
+        driver.get(registerPath);
+        var page = new CadastroPage(driver);
+        page.cadastroUserValido("josenildo", "josenildo@josenildo.com", "+5516999999921");
+
+
+
         Thread.sleep(10000);
         driver.quit();
+    }
+
+    @Test
+    @DisplayName("should return list of contatos from homepage")
+    void shouldReturnListOfContatosFromHomepage() throws InterruptedException {
+
+        driver.get(indexPath);
+        var contatosPage = new ContatosPage(driver);
+        var contatos = contatosPage.getContatos();
+        assertThat(contatos.size()).isEqualTo(4);
+
     }
 }
