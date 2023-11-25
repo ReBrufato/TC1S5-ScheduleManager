@@ -3,10 +3,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class HomePage {
-    private WebDriver driver;
+    protected WebDriver driver;
 
-    private By listaContato = By.id("contacts");
-    private By itemContatos = By.className("item");
+    protected By listaContato = By.id("contacts");
+    protected By itemContatos = By.className("item");
 
     public HomePage(WebDriver driver){
         this.driver = driver;
