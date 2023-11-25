@@ -7,5 +7,5 @@ public class ContatosPage extends HomePage {
     public ContatosPage(WebDriver driver) {
         super(driver);
     }
-    
+
 }
