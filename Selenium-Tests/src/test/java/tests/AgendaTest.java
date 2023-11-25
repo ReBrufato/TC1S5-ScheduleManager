@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import pages.CadastroPage;
+import pages.ContatosComponent;
 import pages.ContatosPage;
 
 import java.util.ArrayList;
@@ -61,27 +62,34 @@ public class AgendaTest {
     }
 
     @Test
-    @DisplayName("Should open and close chrome browser using Manager")
-    void shouldOpenAndCloseChromeBrowserUsingManager() throws InterruptedException {
-
+    @DisplayName("should alert success when register a valid user")
+    void shouldAlertSuccessWhenRegisterAValidUser() {
         driver.get(registerPath);
         var page = new CadastroPage(driver);
         page.cadastroUserValido("josenildo", "josenildo@josenildo.com", "+5516999999921");
+        String mensagemAlerta = driver.switchTo().alert().getText();
 
+        assertThat(mensagemAlerta).isEqualTo("Contato salvo com sucesso!");
 
-
-        Thread.sleep(10000);
-        driver.quit();
     }
-
+    
     @Test
     @DisplayName("should return list of contatos from homepage")
-    void shouldReturnListOfContatosFromHomepage() throws InterruptedException {
+    void shouldReturnListOfContatosFromHomepage() {
 
         driver.get(indexPath);
         var contatosPage = new ContatosPage(driver);
         var contatos = contatosPage.getContatos();
         assertThat(contatos.size()).isEqualTo(4);
+    }
+    
+    @Test
+    @DisplayName("should contain user in the home page")
+    void shouldContainUserInTheHomePage(){
 
+        driver.get(indexPath);
+        var contatosPage = new ContatosPage(driver);
+        List<ContatosComponent> contatos = contatosPage.getContato(c -> c.getNome().equals("Maria da Silva"));
+        assertThat(contatos).isNotEmpty();
     }
 }

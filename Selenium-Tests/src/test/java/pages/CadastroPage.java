@@ -20,13 +20,10 @@ public class CadastroPage {
         }
     }
 
-    public HomePage cadastroUserValido(String nome, String email, String telefone) throws InterruptedException {
+    public void cadastroUserValido(String nome, String email, String telefone) {
         driver.findElement(nameContact).sendKeys(nome);
         driver.findElement(emailContact).sendKeys(email);
         driver.findElement(phoneContact).sendKeys(telefone);
         driver.findElement(submit).click();
-        driver.switchTo().alert().accept();
-        driver.findElement(retornoIndex).click();
-        return new HomePage(driver);
     }
 }

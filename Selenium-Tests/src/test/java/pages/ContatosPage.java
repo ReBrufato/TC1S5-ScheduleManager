@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class ContatosPage extends HomePage {
 
@@ -19,12 +20,13 @@ public class ContatosPage extends HomePage {
                 .toList();
     }
     
-    public ContatosComponent getContato(Predicate<ContatosComponent> condition){
-        return getContatos()
-                .stream()
-                .filter(condition)
-                .findFirst()
-                .orElseThrow();
+    public List<ContatosComponent> getContato(Predicate<ContatosComponent> condition){
+        List<ContatosComponent> contatos = getContatos()
+                        .stream()
+                        .filter(condition)
+                        .collect(Collectors.toList());
+
+        return contatos;
     }
 
 }
