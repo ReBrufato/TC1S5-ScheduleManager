@@ -6,6 +6,7 @@ public class HomePage {
     private WebDriver driver;
 
     private By listaContato = By.id("contacts");
+    private By itemContatos = By.className("item");
 
     public HomePage(WebDriver driver){
         this.driver = driver;
@@ -15,3 +16,4 @@ public class HomePage {
         }
     }
 }
+
