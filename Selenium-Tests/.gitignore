@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Pasta do chromedriver ###
+/TC1S5-ScheduleManager/Selenium-Tests/src/test/drivers

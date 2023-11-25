@@ -41,9 +41,10 @@ public class AgendaTest {
         }
         indexSource.add("src");
 
-        indexPath = indexSource.toString() + "/index.html";
-        registerPath = indexSource.toString() + "/register.html";
-        editPath = indexSource.toString() + "/edit.html";
+        String basePath = "file:///home/ronaldo/IdeaProjects/TC1S5-ScheduleManager/src";
+        indexPath = basePath + "/index.html";
+        registerPath = basePath + "/register.html";
+        editPath = basePath + "/edit.html";
 
     }
 
@@ -51,9 +52,8 @@ public class AgendaTest {
     void init(){
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
-        System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/chromedriver");
         this.driver = new ChromeDriver(options);
-
     }
 
     @AfterEach
