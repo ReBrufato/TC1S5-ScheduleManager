@@ -1,7 +1,9 @@
 package tests;
 
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import pages.CadastroPage;
@@ -91,5 +93,18 @@ public class AgendaTest {
         var contatosPage = new ContatosPage(driver);
         List<ContatosComponent> contatos = contatosPage.getContato(c -> c.getNome().equals("Maria da Silva"));
         assertThat(contatos).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("should try to delete a person 2 and verify if the name on the alert is the same as the name of the user")
+    void shouldTryToDeleteAPerson2AndVerifyName(){
+
+        driver.get(indexPath);
+        String userName = driver.findElement(By.xpath("//*[@id=\"4\"]/p[1]/span")).getText();
+        driver.findElement(By.xpath("//*[@id=\"4\"]/button[2]")).click();
+
+        String mensagemAlerta = driver.switchTo().alert().getText();
+
+        assertThat(mensagemAlerta).isEqualTo("Tem certeza que quer deletar o contato de " + userName);
     }
 }
