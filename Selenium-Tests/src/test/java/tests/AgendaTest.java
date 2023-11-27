@@ -121,4 +121,17 @@ public class AgendaTest {
 
         assertEquals(contactAfterCancelDeletion.size(), contactBeforeTryDelete.size());
     }
+
+    @Test
+    @DisplayName("should try to delete a person 2")
+    void shouldTryToDeleteAPerson2(){
+
+        driver.get(indexPath);
+        String userName = driver.findElement(By.xpath("//*[@id=\"4\"]/p[1]/span")).getText();
+        driver.findElement(By.xpath("//*[@id=\"4\"]/button[2]")).click();
+        driver.switchTo().alert().accept();
+        String alertMessage = driver.switchTo().alert().getText();
+
+        assertThat(alertMessage).isEqualTo("O contato de " + userName + " foi deletado com sucesso!");
+    }
 }
