@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AgendaTest {
 
@@ -103,8 +104,21 @@ public class AgendaTest {
         String userName = driver.findElement(By.xpath("//*[@id=\"4\"]/p[1]/span")).getText();
         driver.findElement(By.xpath("//*[@id=\"4\"]/button[2]")).click();
 
-        String mensagemAlerta = driver.switchTo().alert().getText();
+        String alertMessage = driver.switchTo().alert().getText();
 
-        assertThat(mensagemAlerta).isEqualTo("Tem certeza que quer deletar o contato de " + userName);
+        assertThat(alertMessage).isEqualTo("Tem certeza que quer deletar o contato de " + userName);
+    }
+
+    @Test
+    @DisplayName("should try to delete a person 2 and then cancel")
+    void shouldTryToDeleteAPerson2AndThenCancel(){
+
+        driver.get(indexPath);
+        List<WebElement> contactBeforeTryDelete = driver.findElements(By.className("item"));
+        driver.findElement(By.xpath("//*[@id=\"4\"]/button[2]")).click();
+        driver.switchTo().alert().dismiss();
+        List<WebElement> contactAfterCancelDeletion = driver.findElements(By.className("item"));
+
+        assertEquals(contactAfterCancelDeletion.size(), contactBeforeTryDelete.size());
     }
 }
