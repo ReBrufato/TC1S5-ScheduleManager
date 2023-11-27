@@ -127,11 +127,16 @@ public class AgendaTest {
     void shouldTryToDeleteAPerson2(){
 
         driver.get(indexPath);
+        List<WebElement> beforeDeleting = driver.findElements(By.className("item"));
         String userName = driver.findElement(By.xpath("//*[@id=\"4\"]/p[1]/span")).getText();
         driver.findElement(By.xpath("//*[@id=\"4\"]/button[2]")).click();
         driver.switchTo().alert().accept();
         String alertMessage = driver.switchTo().alert().getText();
+        driver.switchTo().alert().accept();
+        List<WebElement> afterDeleting = driver.findElements(By.className("item"));
 
         assertThat(alertMessage).isEqualTo("O contato de " + userName + " foi deletado com sucesso!");
+        assertEquals(afterDeleting.size(), beforeDeleting.size() -1);
     }
+
 }
