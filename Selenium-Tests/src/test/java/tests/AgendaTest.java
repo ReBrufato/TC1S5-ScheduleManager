@@ -82,16 +82,19 @@ public class AgendaTest {
     @Test
     @DisplayName("should add one more user to the list if success on insertion")
     void shouldAddOneUserToListIfSuccessInsertion() {
-        driver.get(indexPath);
-        List<WebElement> beforeInsertion = driver.findElements(By.className("item"));
-        driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
-        var page = new CadastroPage(driver);
-        page.cadastroUserValido("josenildo", "josenildo@josenildo.com", "+5516999999921");
-        driver.switchTo().alert().accept();
-        driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
-        List<WebElement> afterInsertion = driver.findElements(By.className("item"));
 
-        assertEquals(afterInsertion.size(), beforeInsertion.size() + 1);
+        driver.get(indexPath);
+        var contatosPage = new ContatosPage(driver);
+        var cadastroPagepage = new CadastroPage(driver);
+        var pessoa = new PessoaFaker();
+
+        var beforeInsertion = contatosPage.getContatos();
+
+        cadastroPagepage.cadastroUserValidoFromIndex(pessoa.nome, pessoa.email, pessoa.phone);
+
+        var afterInsertion = contatosPage.getContatos();
+
+        assertThat(afterInsertion.size()).isEqualTo(beforeInsertion.size() + 1);
     }
 
     @Test

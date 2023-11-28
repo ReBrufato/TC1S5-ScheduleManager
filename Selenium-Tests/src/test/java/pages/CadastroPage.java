@@ -21,9 +21,21 @@ public class CadastroPage {
     }
 
     public void cadastroUserValido(String nome, String email, String telefone) {
+
+
         driver.findElement(nameContact).sendKeys(nome);
         driver.findElement(emailContact).sendKeys(email);
         driver.findElement(phoneContact).sendKeys(telefone);
         driver.findElement(submit).click();
+
+    }
+
+    public void cadastroUserValidoFromIndex(String nome, String email, String telefone){
+        driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
+
+        this.cadastroUserValido(nome, email, telefone);
+
+        driver.switchTo().alert().accept();
+        driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
     }
 }
