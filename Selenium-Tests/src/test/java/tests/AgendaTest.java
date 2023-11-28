@@ -1,5 +1,6 @@
 package tests;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -24,6 +25,8 @@ public class AgendaTest {
     static String indexPath;
     static String registerPath;
     static String editPath;
+
+    private PessoaFaker pessoa;
 
     @BeforeAll
     static void getIndexPath(){
@@ -53,10 +56,16 @@ public class AgendaTest {
 
     @BeforeEach
     void init(){
+
+        String driverWindows = "src/test/resources/drivers/chromedriverWindows.exe";
+        String driverLinux = "src/test/resources/drivers/chromedriver";
+
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
-        System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver",driverWindows);
         this.driver = new ChromeDriver(options);
+
+        this.pessoa = new PessoaFaker();
     }
 
     @AfterEach
@@ -71,10 +80,7 @@ public class AgendaTest {
         driver.get(registerPath);
         var page = new CadastroPage(driver);
 
-        PessoaFaker pessoa = new PessoaFaker();
-        page.cadastroUserValido(pessoa.nome, pessoa.email, pessoa.phone);
-
-        String mensagemAlerta = driver.switchTo().alert().getText();
+        String mensagemAlerta = page.getAlertMessageText(pessoa.nome, pessoa.email, pessoa.phone);
 
         assertThat(mensagemAlerta).isEqualTo("Contato salvo com sucesso!");
     }
@@ -85,12 +91,11 @@ public class AgendaTest {
 
         driver.get(indexPath);
         var contatosPage = new ContatosPage(driver);
-        var cadastroPagepage = new CadastroPage(driver);
-        var pessoa = new PessoaFaker();
+        var cadastroPage = new CadastroPage(driver);
 
         var beforeInsertion = contatosPage.getContatos();
 
-        cadastroPagepage.cadastroUserValidoFromIndex(pessoa.nome, pessoa.email, pessoa.phone);
+        cadastroPage.cadastroUserValidoFromIndex(pessoa.nome, pessoa.email, pessoa.phone);
 
         var afterInsertion = contatosPage.getContatos();
 
@@ -100,10 +105,10 @@ public class AgendaTest {
     @Test
     @DisplayName("should not save contact with null name")
     void shouldNotSaveContactWithBlancName() {
+
         driver.get(registerPath);
-        var page = new CadastroPage(driver);
-        page.cadastroUserValido("", "josenildo@josenildo.com", "+5516999999921");
-        String alertMessage = driver.switchTo().alert().getText();
+        var cadastroPage = new CadastroPage(driver);
+        String alertMessage = cadastroPage.getAlertMessageText("", pessoa.email, pessoa.phone);
 
         assertThat(alertMessage).isEqualTo("Nome inválido!");
     }
@@ -112,9 +117,8 @@ public class AgendaTest {
     @DisplayName("should not save contact with null email")
     void shouldNotSaveContactWithBlancEmail() {
         driver.get(registerPath);
-        var page = new CadastroPage(driver);
-        page.cadastroUserValido("josenildo", "", "+5516999999921");
-        String alertMessage = driver.switchTo().alert().getText();
+        var cadastroPage = new CadastroPage(driver);
+        String alertMessage = cadastroPage.getAlertMessageText(pessoa.nome, "", pessoa.phone);
 
         assertThat(alertMessage).isEqualTo("Email inválido!");
     }
@@ -123,9 +127,8 @@ public class AgendaTest {
     @DisplayName("should not save contact with null phone")
     void shouldNotSaveContactWithBlancPhone() {
         driver.get(registerPath);
-        var page = new CadastroPage(driver);
-        page.cadastroUserValido("josenildo", "josenildo@josenildo.com", "");
-        String alertMessage = driver.switchTo().alert().getText();
+        var cadastroPage = new CadastroPage(driver);
+        String alertMessage = cadastroPage.getAlertMessageText(pessoa.nome, pessoa.email, "");
 
         assertThat(alertMessage).isEqualTo("Telefone inválido!");
     }
@@ -141,12 +144,16 @@ public class AgendaTest {
     }
     
     @Test
-    @DisplayName("should contain user in the home page")
-    void shouldContainUserInTheHomePage(){
+    @DisplayName("should contain user in the home page after valid register")
+    void shouldContainUserInTheHomePageAfterValidRegister(){
 
         driver.get(indexPath);
+        var cadastroPage = new CadastroPage(driver);
         var contatosPage = new ContatosPage(driver);
-        List<ContatosComponent> contatos = contatosPage.getContato(c -> c.getNome().equals("Maria da Silva"));
+
+        cadastroPage.cadastroUserValidoFromIndex(pessoa.nome, pessoa.email, pessoa.phone);
+
+        List<ContatosComponent> contatos = contatosPage.getContato(c -> c.getNome().equals(pessoa.nome));
         assertThat(contatos).isNotEmpty();
     }
 
@@ -155,10 +162,10 @@ public class AgendaTest {
     void shouldTryToDeleteAPerson2AndVerifyName(){
 
         driver.get(indexPath);
-        String userName = driver.findElement(By.xpath("//*[@id=\"4\"]/p[1]/span")).getText();
-        driver.findElement(By.xpath("//*[@id=\"4\"]/button[2]")).click();
+        var contatosPage = new ContatosPage(driver);
 
-        String alertMessage = driver.switchTo().alert().getText();
+        String userName = contatosPage.getContatoNameFromId("4");
+        String alertMessage = contatosPage.getDeleteAlertMessageFromId("4");
 
         assertThat(alertMessage).isEqualTo("Tem certeza que quer deletar o contato de " + userName);
     }
@@ -168,12 +175,15 @@ public class AgendaTest {
     void shouldTryToDeleteAPerson2AndThenCancel(){
 
         driver.get(indexPath);
-        List<WebElement> contactBeforeTryDelete = driver.findElements(By.className("item"));
-        driver.findElement(By.xpath("//*[@id=\"4\"]/button[2]")).click();
-        driver.switchTo().alert().dismiss();
-        List<WebElement> contactAfterCancelDeletion = driver.findElements(By.className("item"));
+        var contatosPage = new ContatosPage(driver);
 
-        assertEquals(contactAfterCancelDeletion.size(), contactBeforeTryDelete.size());
+        var contactBeforeTryDelete = contatosPage.getContatos();
+
+        contatosPage.dismissDeleteFromId("4");
+
+        var contactAfterCancelDeletion = contatosPage.getContatos();
+
+        assertThat(contactAfterCancelDeletion.size()).isEqualTo(contactBeforeTryDelete.size());
     }
 
     @Test
@@ -181,15 +191,18 @@ public class AgendaTest {
     void shouldTryToDeleteAPerson2(){
 
         driver.get(indexPath);
-        List<WebElement> beforeDeleting = driver.findElements(By.className("item"));
-        String userName = driver.findElement(By.xpath("//*[@id=\"4\"]/p[1]/span")).getText();
-        driver.findElement(By.xpath("//*[@id=\"4\"]/button[2]")).click();
-        driver.switchTo().alert().accept();
-        String alertMessage = driver.switchTo().alert().getText();
-        driver.switchTo().alert().accept();
-        List<WebElement> afterDeleting = driver.findElements(By.className("item"));
+        var contatosPage = new ContatosPage(driver);
 
-        assertThat(alertMessage).isEqualTo("O contato de " + userName + " foi deletado com sucesso!");
-        assertEquals(afterDeleting.size(), beforeDeleting.size() -1);
+        var beforeDeleting = contatosPage.getContatos();
+
+        String userName = contatosPage.getContatoNameFromId("4");
+        String alertMessage = contatosPage.getDeleteAlertSuccessMessageFromId("4");
+
+        var afterDeleting = contatosPage.getContatos();
+
+        SoftAssertions soft = new SoftAssertions();
+        soft.assertThat(alertMessage).isEqualTo("O contato de " + userName + " foi deletado com sucesso!");
+        soft.assertThat(afterDeleting.size()).isEqualTo(beforeDeleting.size() -1);
+        soft.assertAll();
     }
 }

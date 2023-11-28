@@ -22,7 +22,6 @@ public class CadastroPage {
 
     public void cadastroUserValido(String nome, String email, String telefone) {
 
-
         driver.findElement(nameContact).sendKeys(nome);
         driver.findElement(emailContact).sendKeys(email);
         driver.findElement(phoneContact).sendKeys(telefone);
@@ -37,5 +36,13 @@ public class CadastroPage {
 
         driver.switchTo().alert().accept();
         driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
+    }
+
+    public String getAlertMessageText(String nome, String email, String telefone){
+
+        this.cadastroUserValido(nome, email, telefone);
+        String alertMessage = driver.switchTo().alert().getText();
+
+        return alertMessage;
     }
 }
