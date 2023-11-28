@@ -205,4 +205,15 @@ public class AgendaTest {
         soft.assertThat(afterDeleting).isEqualTo(beforeDeleting -1);
         soft.assertAll();
     }
+
+    @Test
+    @DisplayName("should not accept invalid email")
+    void shouldNotAcceptInvalidEmail(){
+
+        driver.get(registerPath);
+        var cadastroPage = new CadastroPage(driver);
+        String alertMessage = cadastroPage.getAlertMessageText(pessoa.nome, "@dominio-.com", pessoa.phone);
+
+        assertThat(alertMessage).isEqualTo("Email inválido!");
+    }
 }
