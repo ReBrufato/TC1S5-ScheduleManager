@@ -111,7 +111,16 @@ public class AgendaTest {
         assertThat(alertMessage).isEqualTo("Email inválido!");
     }
 
+    @Test
+    @DisplayName("should not save contact with null phone")
+    void shouldNotSaveContactWithBlancPhone() {
+        driver.get(registerPath);
+        var page = new CadastroPage(driver);
+        page.cadastroUserValido("josenildo", "josenildo@josenildo.com", "");
+        String alertMessage = driver.switchTo().alert().getText();
 
+        assertThat(alertMessage).isEqualTo("Telefone inválido!");
+    }
     
     @Test
     @DisplayName("should return list of contatos from homepage")
