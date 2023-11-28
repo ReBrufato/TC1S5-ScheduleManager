@@ -78,9 +78,9 @@ public class AgendaTest {
     void shouldAlertSuccessWhenRegisterAValidUser() {
 
         driver.get(registerPath);
-        var page = new CadastroPage(driver);
+        var cadastroPage = new CadastroPage(driver);
 
-        String mensagemAlerta = page.getAlertMessageText(pessoa.nome, pessoa.email, pessoa.phone);
+        String mensagemAlerta = cadastroPage.getAlertMessageText(pessoa.nome, pessoa.email, pessoa.phone);
 
         assertThat(mensagemAlerta).isEqualTo("Contato salvo com sucesso!");
     }
@@ -93,13 +93,13 @@ public class AgendaTest {
         var contatosPage = new ContatosPage(driver);
         var cadastroPage = new CadastroPage(driver);
 
-        var beforeInsertion = contatosPage.getContatos();
+        var beforeInsertion = contatosPage.getContatos().size();
 
         cadastroPage.cadastroUserValidoFromIndex(pessoa.nome, pessoa.email, pessoa.phone);
 
-        var afterInsertion = contatosPage.getContatos();
+        var afterInsertion = contatosPage.getContatos().size();
 
-        assertThat(afterInsertion.size()).isEqualTo(beforeInsertion.size() + 1);
+        assertThat(afterInsertion).isEqualTo(beforeInsertion + 1);
     }
 
     @Test
@@ -177,13 +177,13 @@ public class AgendaTest {
         driver.get(indexPath);
         var contatosPage = new ContatosPage(driver);
 
-        var contactBeforeTryDelete = contatosPage.getContatos();
+        var contactBeforeTryDelete = contatosPage.getContatos().size();
 
         contatosPage.dismissDeleteFromId("4");
 
-        var contactAfterCancelDeletion = contatosPage.getContatos();
+        var contactAfterCancelDeletion = contatosPage.getContatos().size();
 
-        assertThat(contactAfterCancelDeletion.size()).isEqualTo(contactBeforeTryDelete.size());
+        assertThat(contactAfterCancelDeletion).isEqualTo(contactBeforeTryDelete);
     }
 
     @Test
@@ -193,16 +193,16 @@ public class AgendaTest {
         driver.get(indexPath);
         var contatosPage = new ContatosPage(driver);
 
-        var beforeDeleting = contatosPage.getContatos();
+        var beforeDeleting = contatosPage.getContatos().size();
 
         String userName = contatosPage.getContatoNameFromId("4");
         String alertMessage = contatosPage.getDeleteAlertSuccessMessageFromId("4");
 
-        var afterDeleting = contatosPage.getContatos();
+        var afterDeleting = contatosPage.getContatos().size();
 
         SoftAssertions soft = new SoftAssertions();
         soft.assertThat(alertMessage).isEqualTo("O contato de " + userName + " foi deletado com sucesso!");
-        soft.assertThat(afterDeleting.size()).isEqualTo(beforeDeleting.size() -1);
+        soft.assertThat(afterDeleting).isEqualTo(beforeDeleting -1);
         soft.assertAll();
     }
 }
