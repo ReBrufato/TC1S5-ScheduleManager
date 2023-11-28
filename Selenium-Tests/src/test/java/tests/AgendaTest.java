@@ -88,6 +88,17 @@ public class AgendaTest {
 
         assertEquals(afterInsertion.size(), beforeInsertion.size() + 1);
     }
+
+    @Test
+    @DisplayName("should not save contact with null name")
+    void shouldNotSaveContactWithBlancName() {
+        driver.get(registerPath);
+        var page = new CadastroPage(driver);
+        page.cadastroUserValido("", "josenildo@josenildo.com", "+5516999999921");
+        String alertMessage = driver.switchTo().alert().getText();
+
+        assertThat(alertMessage).isEqualTo("Nome inválido!");
+    }
     
     @Test
     @DisplayName("should return list of contatos from homepage")
