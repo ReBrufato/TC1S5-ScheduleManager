@@ -35,7 +35,6 @@ public class AgendaTest {
                 .stream()
                 .forEach(f -> folders.add(f));
 
-
         folders.remove(folders.size() - 1);
 
         StringJoiner indexSource = new StringJoiner("\\\\");
@@ -73,7 +72,21 @@ public class AgendaTest {
         String mensagemAlerta = driver.switchTo().alert().getText();
 
         assertThat(mensagemAlerta).isEqualTo("Contato salvo com sucesso!");
+    }
 
+    @Test
+    @DisplayName("should add one more user to the list if success on insertion")
+    void shouldAddOneUserToListIfSuccessInsertion() {
+        driver.get(indexPath);
+        List<WebElement> beforeInsertion = driver.findElements(By.className("item"));
+        driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
+        var page = new CadastroPage(driver);
+        page.cadastroUserValido("josenildo", "josenildo@josenildo.com", "+5516999999921");
+        driver.switchTo().alert().accept();
+        driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
+        List<WebElement> afterInsertion = driver.findElements(By.className("item"));
+
+        assertEquals(afterInsertion.size(), beforeInsertion.size() + 1);
     }
     
     @Test
@@ -138,5 +151,4 @@ public class AgendaTest {
         assertThat(alertMessage).isEqualTo("O contato de " + userName + " foi deletado com sucesso!");
         assertEquals(afterDeleting.size(), beforeDeleting.size() -1);
     }
-
 }
