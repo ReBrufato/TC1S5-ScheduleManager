@@ -48,9 +48,9 @@ public class ContatoEditPage {
         return alertMessage;
     }
 
-    public void cadastroUserAndReturnToIndex(String nome, String email, String telefone){
+    public void editUserAndReturnToIndex(String nome, String email, String telefone){
         this.editUserValido(nome, email, telefone);
         driver.switchTo().alert().accept();
-        driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
+//        driver.findElement(By.xpath("//*[@id=\"nav\"]")).click();
     }
 }

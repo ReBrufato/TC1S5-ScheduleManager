@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import pages.CadastroPage;
+import pages.ContatoEditPage;
 import pages.ContatosComponent;
 import pages.ContatosPage;
 
@@ -154,7 +155,7 @@ public class AgendaTest {
         cadastroPage.cadastroUserValidoFromIndex(pessoa.nome, pessoa.email, pessoa.phone);
 
         List<ContatosComponent> contatos = contatosPage.getContato(c -> c.getNome().equals(pessoa.nome));
-        assertThat(contatos).isNotEmpty();
+        assertThat(contatos.size()).isGreaterThan(0);
     }
 
     @Test
@@ -235,8 +236,14 @@ public class AgendaTest {
     @DisplayName("should can not edit an inexist contact")
     void shouldCanNotEditAnInexistContact(){
 
+        driver.get(indexPath);
         driver.get(editPath);
+        var editPage = new ContatoEditPage(driver);
+        var contatosPage = new ContatosPage(driver);
 
+        editPage.editUserAndReturnToIndex(pessoa.nome, pessoa.email, pessoa.phone);
 
+        List<ContatosComponent> contatos = contatosPage.getContato(c -> c.getNome().equals(pessoa.nome));
+        assertThat(contatos.size()).isEqualTo(0);
     }
 }

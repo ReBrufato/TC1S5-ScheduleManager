@@ -19,8 +19,7 @@ public class PessoaFaker {
         
         String[] full_name = nome.split(" ");
         String email = full_name[0].toLowerCase() + "." +
-                       full_name[1].toLowerCase() + "@" +
-                       full_name[0].toLowerCase() + ".com";
+                       full_name[1].toLowerCase() + "@dominio.com";
 
         this.email = email;
 
