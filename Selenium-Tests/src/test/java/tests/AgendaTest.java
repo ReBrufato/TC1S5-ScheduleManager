@@ -216,4 +216,27 @@ public class AgendaTest {
 
         assertThat(alertMessage).isEqualTo("Email inválido!");
     }
+
+    @Test
+    @DisplayName("should save a valid user after register the first user")
+    void shouldSaveAValidUserAfterRegisterTheFirstUser(){
+
+        driver.get(registerPath);
+        var cadastroPage = new CadastroPage(driver);
+        var contatosPage = new ContatosPage(driver);
+
+        cadastroPage.cadastroUserAndReturnToIndex(pessoa.nome, pessoa.email, pessoa.phone);
+
+        List<ContatosComponent> contatos = contatosPage.getContato(c -> c.getNome().equals(pessoa.nome));
+        assertThat(contatos.size()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("should can not edit an inexist contact")
+    void shouldCanNotEditAnInexistContact(){
+
+        driver.get(editPath);
+
+
+    }
 }
