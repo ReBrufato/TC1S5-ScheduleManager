@@ -43,10 +43,11 @@ public class AgendaTest {
         }
         indexSource.add("src");
 
-        String basePath = "file:///home/ronaldo/IdeaProjects/TC1S5-ScheduleManager/src";
-        indexPath = basePath + "/index.html";
-        registerPath = basePath + "/register.html";
-        editPath = basePath + "/edit.html";
+        String basePathWindows = indexSource.toString();
+        String basePathLinux = "file:///home/ronaldo/IdeaProjects/TC1S5-ScheduleManager/src";
+        indexPath = basePathWindows + "/index.html";
+        registerPath = basePathWindows + "/register.html";
+        editPath = basePathWindows + "/edit.html";
 
     }
 
@@ -54,7 +55,7 @@ public class AgendaTest {
     void init(){
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
-        System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/chromedriver");
+        System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/chromedriver.exe");
         this.driver = new ChromeDriver(options);
     }
 
@@ -66,9 +67,13 @@ public class AgendaTest {
     @Test
     @DisplayName("should alert success when register a valid user")
     void shouldAlertSuccessWhenRegisterAValidUser() {
+
         driver.get(registerPath);
         var page = new CadastroPage(driver);
-        page.cadastroUserValido("josenildo", "josenildo@josenildo.com", "+5516999999921");
+
+        PessoaFaker pessoa = new PessoaFaker();
+        page.cadastroUserValido(pessoa.nome, pessoa.email, pessoa.phone);
+
         String mensagemAlerta = driver.switchTo().alert().getText();
 
         assertThat(mensagemAlerta).isEqualTo("Contato salvo com sucesso!");
