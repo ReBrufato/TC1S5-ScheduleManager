@@ -14,7 +14,7 @@ public class PessoaFaker {
 
         Faker faker = new Faker();
         
-        String nome = faker.name().fullName();
+        String nome = faker.name().fullName().replace(".", "");
         this.nome = nome;
         
         String[] full_name = nome.split(" ");
